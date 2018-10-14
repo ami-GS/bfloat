@@ -71,6 +71,59 @@ public:
     }
 };
 
+class BFMat {
+    int rows;
+    int cols;
+    bfloat* mat;
+public:
+    BFMat(int rows, int cols) : rows(rows), cols(cols) {
+        this->mat = new bfloat[rows*cols];
+    }
+    BFMat* operator *(BFMat* rm) {
+        assert(this->rows == rm->rows && this->cols == rm->cols);
+        BFMat* out = new BFMat(this->rows, this->cols);
+        for (int i = 0; i < this->rows*this->cols; ++i) {
+            out->mat[i] = this->mat[i] * rm->mat[i];
+        }
+        return out;
+    }
+    BFMat* operator /(BFMat* rm) {
+        assert(this->rows == rm->rows && this->cols == rm->cols);
+        BFMat* out = new BFMat(this->rows, this->cols);
+        for (int i = 0; i < this->rows*this->cols; ++i) {
+            out->mat[i] = this->mat[i] / rm->mat[i];
+        }
+        return out;
+    }
+    BFMat* operator +(BFMat* rm) {
+        assert(this->rows == rm->rows && this->cols == rm->cols);
+        BFMat* out = new BFMat(this->rows, this->cols);
+        for (int i = 0; i < this->rows*this->cols; ++i) {
+            out->mat[i] = this->mat[i] + rm->mat[i];
+        }
+        return out;
+    }
+    BFMat* operator -(BFMat* rm) {
+        assert(this->rows == rm->rows && this->cols == rm->cols);
+        BFMat* out = new BFMat(this->rows, this->cols);
+        for (int i = 0; i < this->rows*this->cols; ++i) {
+            out->mat[i] = this->mat[i] - rm->mat[i];
+        }
+        return out;
+    }
+    BFMat* dot(BFMat* rm) {
+        assert(this->cols == rm->rows);
+        BFMat* out = new BFMat(this->rows, rm->cols);
+        for (int i = 0; i < this->rows; ++i ) {
+            for (int j = 0; j < rm->cols; ++j ) {
+                for (int k = 0; k < rm->rows; ++k ) {
+                    out->mat[i*rm->cols + j] += this->mat[i*this->cols + k] + rm->mat[j + k*rm->cols];
+                }
+            }
+        }
+        return out;
+    }
+};
 
 
 #endif // BFLOAT_H_
